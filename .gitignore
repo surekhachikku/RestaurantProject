@@ -1,0 +1,86 @@
+##############################
+# GLOBAL
+##############################
+.DS_Store
+Thumbs.db
+*.log
+
+##############################
+# MAVEN (for all backend services)
+##############################
+**/target/
+**/logs/
+**/out/
+**/build/
+
+# Maven specific
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+##############################
+# SPRING BOOT (all microservices)
+##############################
+**/*.iml
+**/.classpath
+**/.project
+**/.settings/
+**/.idea/
+**/.vscode/
+
+# Ignore JARs
+**/*.jar
+**/*.war
+
+# Ignore environment files
+**/application-*.yml
+**/application-*.properties
+*.env
+.env
+
+##############################
+# ANGULAR FRONTEND
+##############################
+# Node modules
+**/node_modules/
+
+# Angular build output
+**/dist/
+**/.angular/
+**/.cache/
+**/tmp/
+
+# Environment files
+**/src/environments/environment.ts
+**/src/environments/environment.prod.ts
+
+##############################
+# LOG FILES
+##############################
+**/debug.log
+**/npm-debug.log
+**/yarn-debug.log
+**/yarn-error.log
+
+##############################
+# OS FILES
+##############################
+ehthumbs.db
+Icon?
+*.swp
+*.swo
+
+##############################
+# BACKEND IDEA/EDITOR
+##############################
+**/.idea/
+**/*.iws
+**/*.ipr
+**/*.iml
+
+##############################
+# GIT IGNORE CLEANUP
+##############################
+# Optional backup folders
+backup/
+tmp/
+temp/
