@@ -1,0 +1,35 @@
+package com.restaurant.userservice.service;
+
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+
+import com.restaurant.userservice.dto.UserDTO;
+import com.restaurant.userservice.entity.User;
+import com.restaurant.userservice.mapper.UsersMapper;
+import com.restaurant.userservice.repository.UsersRepository;
+
+@Service
+public class UsersService {
+
+	@Autowired
+	private UsersRepository usersRepository;
+	
+	public ResponseEntity<UsersDTO> fetchUserById(int id) {
+		
+		Optional<Users> user = usersRepository.findById(id);
+		if(user.isPresent())
+			return new ResponseEntity<>(UsersMapper.Instance.mapUserToUsersDTO(user.get()),HttpStatus.OK);
+		else
+			return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
+	}
+
+	public UsersDTO addUser(UsersDTO userDTO) {
+		Users user = usersRepository.save(UsersMapper.Instance.mapUsersDTOToUsers(userDTO));
+		return UsersMapper.Instance.mapUserToUsersDTO(user);
+	}
+
+}

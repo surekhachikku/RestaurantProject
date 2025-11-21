@@ -1,0 +1,55 @@
+<div class="food-page">
+  <h2>🍽️ {{ restaurantName }} Menu</h2>
+
+  <div *ngIf="foodItems.length > 0; else noFood">
+
+    <!-- Veg Items -->
+    <h3 class="section-title">🌿 Veg Items</h3>
+    <div class="food-container" *ngIf="vegItems.length > 0; else noVeg">
+      <div class="food-card" *ngFor="let food of vegItems">
+        <div class="food-header">
+          <input type="checkbox" [(ngModel)]="food.selected" />
+          <strong>{{ food.itemName }}</strong>
+          <span class="price">₹{{ food.price }}</span>
+        </div>
+        <p class="description">{{ food.itemDescription }}</p>
+
+        <div *ngIf="food.selected" class="quantity-container">
+          Quantity:
+          <input type="number" [(ngModel)]="food.quantity" min="1" />
+        </div>
+      </div>
+    </div>
+    <ng-template #noVeg><p>No veg items available.</p></ng-template>
+
+    <!-- Non-Veg Items -->
+    <h3 class="section-title">🍗 Non-Veg Items</h3>
+    <div class="food-container" *ngIf="nonVegItems.length > 0; else noNonVeg">
+      <div class="food-card" *ngFor="let food of nonVegItems">
+        <div class="food-header">
+          <input type="checkbox" [(ngModel)]="food.selected" />
+          <strong>{{ food.itemName }}</strong>
+          <span class="price">₹{{ food.price }}</span>
+        </div>
+        <p class="description">{{ food.itemDescription }}</p>
+
+        <div *ngIf="food.selected" class="quantity-container">
+          Quantity:
+          <input type="number" [(ngModel)]="food.quantity" min="1" />
+        </div>
+      </div>
+    </div>
+    <ng-template #noNonVeg><p>No non-veg items available.</p></ng-template>
+
+    <!-- Total & Action Buttons -->
+    <div class="order-summary">
+      <p><strong>Total:</strong> ₹{{ calculateTotal() }}</p>
+      <button (click)="placeOrder()" class="place-order-btn">Place Order</button>
+      <button (click)="back()" class="back-btn">Back</button>
+    </div>
+  </div>
+
+  <ng-template #noFood>
+    <p>No food items available for this restaurant.</p>
+  </ng-template>
+</div>

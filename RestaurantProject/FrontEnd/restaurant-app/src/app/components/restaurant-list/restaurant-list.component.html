@@ -1,0 +1,15 @@
+<div class="restaurant-page">
+  <h2>🍴 Restaurants Near You</h2>
+  <p>Browse through our curated list of restaurants and explore delicious dishes.</p>
+
+  <div class="restaurant-container">
+    <div *ngFor="let restaurant of restaurants" class="restaurant-card">
+      <!-- <img [src]="'http://localhost:8086/images' + restaurant.imageUrl" alt="{{ restaurant.name }}" />-->
+<img [src]="'http://localhost:8086' + restaurant.imageUrl" alt="{{ restaurant.name }}" />
+
+      <h3>{{ restaurant.name }}</h3>
+      <p class="location">{{ restaurant.address }}</p>
+      <button class="view-btn" (click)="viewFood(restaurant.id!)">View Food Items</button>
+    </div>
+  </div>
+</div>

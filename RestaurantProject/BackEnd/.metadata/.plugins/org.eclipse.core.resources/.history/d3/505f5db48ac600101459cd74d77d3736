@@ -1,0 +1,139 @@
+package com.restaurant.restaurantservice.controller;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.restaurant.restaurantservice.dto.RestaurantDTO;
+import com.restaurant.restaurantservice.entity.Restaurant;
+import com.restaurant.restaurantservice.service.RestaurantService;
+
+@RestController
+@RequestMapping("/restaurant")
+@CrossOrigin
+public class RestaurantController {
+
+	@Autowired
+	private RestaurantService restaurantService;
+	
+	//private final String uploadDir = "src/main/resources/static/images/";
+	
+	private final String uploadDir = "F://Project/RestaurantProject/BackEnd/Images for Restaurant app/";
+	
+	@GetMapping("/fetchRestaurants")
+	public ResponseEntity<List<RestaurantDTO>> getAllRestaurants() {
+		
+		return new ResponseEntity<>(restaurantService.getAllRestaurants(),HttpStatus.OK);
+		
+	}
+	
+	@PostMapping("/addRestaurants")
+	public ResponseEntity<RestaurantDTO> addRestaurants(@RequestBody RestaurantDTO restaurantDto){
+		
+		return new ResponseEntity<>(restaurantService.addRestaurants(restaurantDto),HttpStatus.CREATED);
+	}
+	
+	 @PostMapping("/addRestaurantsImage")
+	    public ResponseEntity<RestaurantDTO> addRestaurant(
+	            @RequestParam("name") String name,
+	            @RequestParam("address") String address,
+	            @RequestParam("city") String city,
+	            @RequestParam("restaurantDescription") String restaurantDescription,
+	            @RequestParam("image") MultipartFile imageFile
+	    ) throws IOException {
+
+	        // 1️⃣ Save image to static/images
+	        String uniqueFileName = System.currentTimeMillis() + "_" + imageFile.getOriginalFilename();
+	        File dest = new File(uploadDir + uniqueFileName);
+	        dest.getParentFile().mkdirs();
+	        imageFile.transferTo(dest);
+
+	        // 2️⃣ Build image URL for frontend
+	        String imageUrl = "/images/" + uniqueFileName;
+
+	        // 3️⃣ Create DTO
+	        RestaurantDTO restaurantDto = new RestaurantDTO();
+	        restaurantDto.setName(name);
+	        restaurantDto.setAddress(address);
+	        restaurantDto.setCity(city);
+	        restaurantDto.setRestaurantDescription(restaurantDescription);
+	        restaurantDto.setImageUrl(imageUrl);
+
+	        // 4️⃣ Save via service
+	        RestaurantDTO savedRestaurant = restaurantService.addRestaurants(restaurantDto);
+
+	        return new ResponseEntity<>(savedRestaurant, HttpStatus.CREATED);
+	    }
+	
+	@GetMapping("/fetchRestaurants/{id}")
+	public ResponseEntity<RestaurantDTO> fetchRestaurantById(@PathVariable int id){
+		
+		return restaurantService.fetchRestaurantByID(id);
+	}
+	@DeleteMapping("/deleteRestaurant/{id}")
+	public ResponseEntity<RestaurantDTO> deleteRestaurantById(@PathVariable int id){
+		
+		return restaurantService.deleteRestaurantById(id);
+	}
+	@PutMapping("/updateRestaurant/{id}")
+	public ResponseEntity<RestaurantDTO> updateRestaurant(@PathVariable int id, @RequestBody RestaurantDTO restaurantDTO){
+		
+		return restaurantService.updateRestaurant(id,restaurantDTO);
+	}
+	
+	@PutMapping("/updateWithImage/{id}")
+	public ResponseEntity<RestaurantDTO> updateRestaurantWithImage(
+	        @PathVariable int id,
+	        @RequestParam("name") String name,
+	        @RequestParam("address") String address,
+	        @RequestParam("city") String city,
+	        @RequestParam("restaurantDescription") String restaurantDescription,
+	        @RequestParam(value = "image", required = false) MultipartFile imageFile
+	) throws IOException {
+
+	    ResponseEntity<RestaurantDTO> existingRestaurantOpt = restaurantService.fetchRestaurantByID(id);
+
+	    if (existingRestaurantOpt.getBody() == null) {
+	        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+	    }
+
+	    RestaurantDTO existingRestaurantDTO = existingRestaurantOpt.getBody();
+
+	    // 1️⃣ Update image if provided
+	    if (imageFile != null && !imageFile.isEmpty()) {
+	        String uniqueFileName = System.currentTimeMillis() + "_" + imageFile.getOriginalFilename();
+	        File dest = new File(uploadDir + uniqueFileName);
+	        dest.getParentFile().mkdirs();
+	        imageFile.transferTo(dest);
+	        String imageUrl = "/images/" + uniqueFileName;
+	        existingRestaurantDTO.setImageUrl(imageUrl);
+	    }
+
+	    // 2️⃣ Update other fields
+	    Optional.ofNullable(name).ifPresent(existingRestaurantDTO::setName);
+	    Optional.ofNullable(address).ifPresent(existingRestaurantDTO::setAddress);
+	    Optional.ofNullable(city).ifPresent(existingRestaurantDTO::setCity);
+	    Optional.ofNullable(restaurantDescription).ifPresent(existingRestaurantDTO::setRestaurantDescription);
+
+	   return restaurantService.updateRestaurantWithImage(existingRestaurantDTO);
+
+	    
+	}
+}

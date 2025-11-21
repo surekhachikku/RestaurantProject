@@ -1,0 +1,27 @@
+<header class="app-header">
+  <div class="header-left">
+    <img src="assets/logo.png" alt="Logo" class="logo" />
+    <h1>RestaurantHub</h1>
+  </div>
+
+  <nav class="header-nav">
+    <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Home</a>
+    
+    <!-- Show Restaurants link only for normal users -->
+    <a *ngIf="isUser()" routerLink="/restaurants" routerLinkActive="active">Restaurants</a>
+    
+    <a routerLink="/about" routerLinkActive="active">About</a>
+    <a routerLink="/contact" routerLinkActive="active">Contact</a>
+  </nav>
+
+  <div class="header-right">
+    <!-- Show login only if not logged in -->
+    <button *ngIf="!auth.isLoggedIn()" (click)="goLogin()">Login</button>
+
+    <!-- Show logout if logged in -->
+    <button *ngIf="auth.isLoggedIn()" (click)="logout()">Logout</button>
+
+    <!-- Show admin panel only for admins -->
+    <button *ngIf="auth.isAdmin()" class="admin-btn" routerLink="/admin">Admin Panel</button>
+  </div>
+</header>

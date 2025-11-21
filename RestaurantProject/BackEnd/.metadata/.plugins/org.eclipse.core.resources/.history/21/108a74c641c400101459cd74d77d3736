@@ -1,0 +1,91 @@
+package com.restaurant.foodcatalogue.service;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+import com.restaurant.foodcatalogue.dto.FoodCataloguePage;
+import com.restaurant.foodcatalogue.dto.FoodItemDTO;
+import com.restaurant.foodcatalogue.dto.Restaurant;
+import com.restaurant.foodcatalogue.entity.FoodItem;
+import com.restaurant.foodcatalogue.mapper.FoodItemMapper;
+import com.restaurant.foodcatalogue.repository.FoodCatalogueRepository;
+
+@Service
+public class FoodCatalogueService {
+
+	@Autowired
+	private FoodCatalogueRepository foodCatalogueRepository;
+	
+	@Autowired
+	RestTemplate restTemplate;
+	
+	public FoodItemDTO addFood(FoodItemDTO foodItemDto) {
+
+		FoodItem foodItem = foodCatalogueRepository.save(FoodItemMapper.INSTANCE.mapFoodItemDTOToFoodItem(foodItemDto));
+		
+		return FoodItemMapper.INSTANCE.mapFoodItemToFoodItemDTO(foodItem);
+	}
+
+	public FoodCataloguePage fetchFoodByRestaurantId(int restaurantId) {
+		
+		List<FoodItem> foodItemList = fetchFoodList(restaurantId);
+		Restaurant restaurant = fetchRestaurantFromRestaurantMS(restaurantId);
+		FoodCataloguePage foodCataloguePage = createFoodCataloguePage(foodItemList,restaurant);
+		return foodCataloguePage;
+	}
+
+	private FoodCataloguePage createFoodCataloguePage(List<FoodItem> foodItemList, Restaurant restaurant) {
+		
+		FoodCataloguePage foodCataloguePage = new FoodCataloguePage();
+		foodCataloguePage.setFoodItemList(foodItemList);
+		foodCataloguePage.setRestaurant(restaurant);
+		return foodCataloguePage;
+		
+	}
+
+	private List<FoodItem> fetchFoodList(int restaurantId) {
+		
+		return foodCatalogueRepository.findByRestaurantId(restaurantId);
+	}
+
+	private Restaurant fetchRestaurantFromRestaurantMS(int restaurantId) {
+		
+		return restTemplate.getForObject("http://restaurant-service/restaurant/fetchRestaurants/"+restaurantId, Restaurant.class);
+		
+	}
+	public ResponseEntity<FoodItemDTO> deleteRestaurantById(int id) {
+		
+		 Optional<FoodItem> food = foodCatalogueRepository.findById(id);
+
+		    if (food.isPresent()) {
+		        foodCatalogueRepository.deleteById(id);
+		        return new ResponseEntity<>(
+		            FoodItemMapper.INSTANCE.mapFoodItemToFoodItemDTO(food.get()),
+		            HttpStatus.OK);
+		    } else {
+		        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+		    }
+	}
+
+	public ResponseEntity<FoodItemDTO> updateFood(int id, FoodItemDTO foodItemDTO) {
+		Optional<FoodItem> existingFoodItem = foodCatalogueRepository.findById(id);
+		
+		if(existingFoodItem.isPresent()) {
+			
+			foodCatalogueRepository.save(FoodItemMapper.INSTANCE.mapFoodItemDTOToFoodItem(foodItemDTO));
+			return new ResponseEntity<>(
+					FoodItemMapper.INSTANCE.mapFoodItemToFoodItemDTO(existingFoodItem.get()),HttpStatus.OK);
+		 } else {
+		        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+		    }
+	}
+
+
+
+}

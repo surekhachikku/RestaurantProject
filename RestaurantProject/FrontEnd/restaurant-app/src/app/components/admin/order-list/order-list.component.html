@@ -1,0 +1,97 @@
+<div class="admin-container">
+  <h2>📦 Manage Orders</h2>
+  <p>View and process orders by filtering through restaurant.</p>
+
+  <!-- FILTERS -->
+  <div class="filter-card">
+    <div class="filter-group">
+      <label>Restaurant:</label>
+      <select [(ngModel)]="selectedRestaurantId" (change)="getOrdersByRestaurant()" class="dropdown">
+        <option value="" selected>All Orders</option>
+        <option *ngFor="let r of restaurants" [value]="r.id">
+          {{ r.name }}
+        </option>
+      </select>
+    </div>
+
+    <button class="submit-btn" (click)="toggleArchived()">
+      {{ showArchivedOrders ? 'Show Pending Orders' : 'Show Archived Orders' }}
+    </button>
+  </div>
+
+  <!-- PENDING ORDERS -->
+  <div class="form-card" *ngIf="orders.length > 0 && !showArchivedOrders; else noPending">
+    <h3>🛒 Pending Orders</h3>
+    <table class="restaurant-table">
+      <thead>
+        <tr>
+          <th>Order ID</th>
+          <th>Restaurant</th>
+          <th>User</th>
+          <th>Items</th>
+          <th>Total Price</th>
+          <th>Order Placed</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let o of orders">
+          <td>{{ o.orderId }}</td>
+          <td>{{ o.restaurant.name }}</td>
+          <td>{{ o.user.username }}</td>
+          <td>
+            <ul>
+              <li *ngFor="let f of o.foodItems">{{ f.itemName }} x{{ f.quantity }}</li>
+            </ul>
+          </td>
+          <td>{{ o.totalPrice | currency }}</td>
+          <td>
+            {{ o.orderPlacedDate ? (o.orderPlacedDate | date:'short') : 'N/A' }}
+          </td>
+          <td>
+            <button class="mark-btn" (click)="markProcessed(o)">Mark Processed</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <ng-template #noPending>
+    <p class="no-orders" *ngIf="!showArchivedOrders">No pending orders found.</p>
+  </ng-template>
+
+  <!-- ARCHIVED ORDERS -->
+  <div class="form-card archived-orders" *ngIf="processedOrders.length > 0 && showArchivedOrders">
+    <h3>📦 Archived Orders</h3>
+    <table class="restaurant-table">
+      <thead>
+        <tr>
+          <th>Order ID</th>
+          <th>Restaurant</th>
+          <th>User</th>
+          <th>Items</th>
+          <th>Total Price</th>
+          <th>Order Placed</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let o of processedOrders">
+          <td>{{ o.orderId }}</td>
+          <td>{{ o.restaurant.name }}</td>
+          <td>{{ o.user.username }}</td>
+          <td>
+            <ul>
+              <li *ngFor="let f of o.foodItems">{{ f.itemName }} x{{ f.quantity }}</li>
+            </ul>
+          </td>
+          <td>{{ o.totalPrice | currency }}</td>
+          <td>
+            {{ o.orderPlacedDate ? (o.orderPlacedDate | date:'short') : 'N/A' }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p *ngIf="message" class="status-message">{{ message }}</p>
+</div>

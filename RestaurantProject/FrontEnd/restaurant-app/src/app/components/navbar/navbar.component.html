@@ -1,0 +1,18 @@
+<nav class="navbar">
+  <div class="logo" routerLink="/">Restaurant App</div>
+
+  <ul class="nav-links">
+    <li><a routerLink="/">Home</a></li>
+    <li><a routerLink="/restaurants">Restaurants</a></li>
+    <li><a routerLink="/about">About</a></li>
+    <li><a routerLink="/contact">Contact</a></li>
+
+    <li *ngIf="!auth.isLoggedIn()">
+      <button (click)="goLogin()">Login</button>
+    </li>
+
+    <li *ngIf="auth.isLoggedIn()">
+      <button (click)="logout()">Logout</button>
+    </li>
+  </ul>
+</nav>

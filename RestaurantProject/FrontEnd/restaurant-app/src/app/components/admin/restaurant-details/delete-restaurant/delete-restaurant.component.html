@@ -1,0 +1,63 @@
+<div class="admin-container">
+  <h2>🍽️ Manage Restaurants</h2>
+  <p>Update or delete restaurant records from the system.</p>
+
+  <!-- TABLE OF RESTAURANTS -->
+  <table class="restaurant-table" *ngIf="restaurants.length > 0; else noData">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Address</th>
+        <th>City</th>
+        <th>Description</th>
+        <th>Image</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let r of restaurants">
+        <td>{{ r.id }}</td>
+
+        <td *ngIf="editId !== r.id">{{ r.name }}</td>
+        <td *ngIf="editId === r.id">
+          <input [(ngModel)]="editRestaurant.name" class="edit-input" />
+        </td>
+
+        <td *ngIf="editId !== r.id">{{ r.address }}</td>
+        <td *ngIf="editId === r.id">
+          <input [(ngModel)]="editRestaurant.address" class="edit-input" />
+        </td>
+
+        <td *ngIf="editId !== r.id">{{ r.city }}</td>
+        <td *ngIf="editId === r.id">
+          <input [(ngModel)]="editRestaurant.city" class="edit-input" />
+        </td>
+
+        <td *ngIf="editId !== r.id">{{ r.restaurantDescription }}</td>
+        <td *ngIf="editId === r.id">
+          <textarea [(ngModel)]="editRestaurant.restaurantDescription" class="edit-input"></textarea>
+        </td>
+
+        <td>
+          <img [src]="r.imageUrl" alt="Image" class="thumb" />
+          <input *ngIf="editId === r.id" type="file" (change)="onFileSelected($event)" />
+        </td>
+
+        <td>
+          <button *ngIf="editId !== r.id" class="edit-btn" (click)="startEdit(r)">Edit</button>
+          <button *ngIf="editId === r.id" class="save-btn" (click)="updateRestaurant()">Save</button>
+          <button *ngIf="editId === r.id" class="cancel-btn" (click)="cancelEdit()">Cancel</button>
+          <button class="delete-btn" (click)="deleteRestaurant(r.id!)">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <ng-template #noData>
+    <p>No restaurants found.</p>
+  </ng-template>
+
+  <!-- Status message -->
+  <p *ngIf="message" class="status-message">{{ message }}</p>
+</div>

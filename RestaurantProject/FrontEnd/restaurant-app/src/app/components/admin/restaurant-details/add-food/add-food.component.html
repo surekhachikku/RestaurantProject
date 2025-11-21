@@ -1,0 +1,109 @@
+<div class="admin-container">
+  <h2>🍴 Manage Food Items</h2>
+  <p>Add, update, or delete food items for a selected restaurant.</p>
+
+  <!-- RESTAURANT DROPDOWN -->
+  <div class="form-card">
+    <label for="restaurantSelect"><strong>Select Restaurant:</strong></label>
+    <select
+      id="restaurantSelect"
+      class="edit-input"
+      [(ngModel)]="selectedRestaurantId"
+      (ngModelChange)="onRestaurantSelect()"
+    >
+      <option [ngValue]="null">-- Choose a restaurant --</option>
+      <option *ngFor="let r of restaurants" [ngValue]="r.id">{{ r.name }}</option>
+    </select>
+  </div>
+
+  <!-- TABLE OF FOOD ITEMS -->
+  <div class="form-card" *ngIf="selectedRestaurantId">
+    <h2>🍽️ {{ selectedRestaurantName }} - Food Items</h2>
+
+    <!-- ADD NEW FOOD FORM -->
+    <div style="margin-bottom: 25px;">
+      <h4 style="color:#ccc;">➕ Add New Food</h4>
+      <div class="food-form">
+        <label>Item Name:</label>
+        <input [(ngModel)]="newFood.itemName" placeholder="Food Name" class="edit-input" />
+
+        <label>Item Price:</label>
+        <input [(ngModel)]="newFood.price" placeholder="Price" type="number" class="edit-input" />
+
+        <label>Item Quantity:</label>
+        <input [(ngModel)]="newFood.quantity" placeholder="Quantity" type="number" class="edit-input" />
+
+        <label>Veg/Non-Veg:</label>
+        <select [(ngModel)]="newFood.isVeg" class="edit-input">
+          <option value="Veg">Veg</option>
+          <option value="Non-Veg">Non-Veg</option>
+        </select>
+
+        <label>Item Description:</label>
+        <textarea [(ngModel)]="newFood.itemDescription" placeholder="Description" class="edit-input"></textarea>
+
+        <button class="submit-btn" (click)="addFood()">Add Food</button>
+      </div>
+    </div>
+
+    <!-- FOOD TABLE -->
+    <table class="restaurant-table" *ngIf="foodList.length > 0; else noData">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Item Name</th>
+          <th>Price</th>
+          <th>Quantity</th>
+          <th>Veg</th>
+          <th>Description</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let f of foodList">
+          <td>{{ f.id }}</td>
+          <td *ngIf="editId !== f.id">{{ f.itemName }}</td>
+          <td *ngIf="editId === f.id">
+            <input [(ngModel)]="editFood.itemName" class="edit-input" />
+          </td>
+
+          <td *ngIf="editId !== f.id">{{ f.price | currency }}</td>
+          <td *ngIf="editId === f.id">
+            <input [(ngModel)]="editFood.price" type="number" class="edit-input" />
+          </td>
+
+          <td *ngIf="editId !== f.id">{{ f.quantity }}</td>
+          <td *ngIf="editId === f.id">
+            <input [(ngModel)]="editFood.quantity" type="number" class="edit-input" />
+          </td>
+
+          <td *ngIf="editId !== f.id">{{ f.isVeg }}</td>
+          <td *ngIf="editId === f.id">
+            <select [(ngModel)]="editFood.isVeg" class="edit-input">
+              <option value="Veg">Veg</option>
+              <option value="Non-Veg">Non-Veg</option>
+            </select>
+          </td>
+
+          <td *ngIf="editId !== f.id">{{ f.itemDescription }}</td>
+          <td *ngIf="editId === f.id">
+            <textarea [(ngModel)]="editFood.itemDescription" class="edit-input"></textarea>
+          </td>
+
+          <td>
+            <button *ngIf="editId !== f.id" class="edit-btn" (click)="startEdit(f)">Edit</button>
+            <button *ngIf="editId === f.id" class="save-btn" (click)="updateFood()">Save</button>
+            <button *ngIf="editId === f.id" class="cancel-btn" (click)="cancelEdit()">Cancel</button>
+            <button class="delete-btn" (click)="deleteFood(f.id!)">Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <ng-template #noData>
+      <p>No food items found for this restaurant.</p>
+    </ng-template>
+  </div>
+
+  <p *ngIf="message" class="status-message">{{ message }}</p>
+</div>

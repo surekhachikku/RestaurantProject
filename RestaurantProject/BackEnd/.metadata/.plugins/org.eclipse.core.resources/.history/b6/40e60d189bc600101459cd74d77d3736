@@ -1,0 +1,79 @@
+package com.restaurant.orderservice.dto;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+public class OrderDTOFromFrontEnd {
+	private Integer orderId;
+	private List<FoodItems> foodItems;
+	private User user;
+	private Restaurant restaurant;
+	private Double totalPrice;
+	private LocalDateTime orderPlacedDate;
+	private boolean processed = false; // New field
+    
+	public OrderDTOFromFrontEnd() {
+		
+	}
+
+	/*public OrderDTOFromFrontEnd(Integer orderId, List<FoodItems> foodItems, User user, Restaurant restaurant,
+			Double totalPrice, boolean processed) {
+		super();
+		this.orderId = orderId;
+		this.foodItems = foodItems;
+		this.user = user;
+		this.restaurant = restaurant;
+		this.totalPrice = totalPrice;
+		this.processed = processed;
+	}*/
+
+	public Integer getOrderId() {
+		return orderId;
+	}
+
+	public void setOrderId(Integer orderId) {
+		this.orderId = orderId;
+	}
+
+	public List<FoodItems> getFoodItems() {
+		return foodItems;
+	}
+
+	public void setFoodItems(List<FoodItems> foodItems) {
+		this.foodItems = foodItems;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	public Restaurant getRestaurant() {
+		return restaurant;
+	}
+
+	public void setRestaurant(Restaurant restaurant) {
+		this.restaurant = restaurant;
+	}
+
+	public Double getTotalPrice() {
+		return totalPrice;
+	}
+
+	public void setTotalPrice(Double totalPrice) {
+		this.totalPrice = totalPrice;
+	}
+
+	public boolean isProcessed() {
+		return processed;
+	}
+
+	public void setProcessed(boolean processed) {
+		this.processed = processed;
+	}
+
+	
+}

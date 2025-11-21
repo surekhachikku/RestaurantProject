@@ -1,0 +1,57 @@
+package com.restaurant.restaurantservice.filter;
+
+import jakarta.servlet.Filter;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Component;
+
+import java.io.IOException;
+
+/**
+ * Filter to validate that requests come through API Gateway
+ * Blocks direct access to service endpoints
+ */
+@Component
+@Order(1)
+public class GatewayValidationFilter implements Filter {
+
+    private static final String HEADER = "X-Gateway-Request";
+    private static final String HEADER_VALUE = "true";
+
+    @Override
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
+
+        HttpServletRequest req = (HttpServletRequest) request;
+        HttpServletResponse res = (HttpServletResponse) response;
+
+        String path = req.getRequestURI();
+
+        // Allow actuator
+        if (path.startsWith("/actuator")) {
+            chain.doFilter(request, response);
+            return;
+        }
+
+        // Block if header missing or incorrect
+        String headerValue = req.getHeader(HEADER);
+        System.out.println("GatewayValidationFilter: path=" + path + ", header=" + headerValue);
+        if (headerValue == null || !HEADER_VALUE.equals(headerValue)) {
+            res.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            res.setContentType("application/json");
+            res.setCharacterEncoding("UTF-8");
+            res.getWriter().write("{\"error\":\"Direct access blocked. Use API Gateway\",\"status\":403,\"path\":\"" + path + "\"}");
+            res.getWriter().flush();
+            return; // Do NOT call chain.doFilter
+        }
+        
+
+        chain.doFilter(request, response);
+    }
+}

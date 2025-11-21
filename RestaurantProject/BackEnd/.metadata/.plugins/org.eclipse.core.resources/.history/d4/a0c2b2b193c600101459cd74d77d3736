@@ -1,0 +1,53 @@
+server.port=8086
+spring.application.name=api-gateway
+
+# Eureka configuration
+eureka.client.service-url.defaultZone=http://localhost:8761/eureka/
+eureka.instance.prefer-ip-address=true
+
+# Discovery Locator
+spring.cloud.gateway.discovery.locator.enabled=true
+spring.cloud.gateway.discovery.locator.lower-case-service-id=true
+
+# ===============================
+# Manual Routes with Gateway Header
+# ===============================
+
+# Auth Service
+spring.cloud.gateway.routes[0].id=auth-service
+spring.cloud.gateway.routes[0].uri=lb://auth-service
+spring.cloud.gateway.routes[0].predicates[0]=Path=/auth/**
+spring.cloud.gateway.routes[0].filters[0]=AddRequestHeader=X-Gateway-Request,true
+
+# Restaurant Service
+spring.cloud.gateway.routes[1].id=restaurant-service
+spring.cloud.gateway.routes[1].uri=lb://restaurant-service
+spring.cloud.gateway.routes[1].predicates[0]=Path=/restaurant/**
+spring.cloud.gateway.routes[1].filters[0]=AddRequestHeader=X-Gateway-Request,true
+#spring.cloud.gateway.routes[1].filters[1]=CircuitBreaker=name=restaurantServiceCB
+#spring.cloud.gateway.routes[1].filters[2]=Retry=3
+# Images route
+spring.cloud.gateway.routes[5].id=restaurant-images
+spring.cloud.gateway.routes[5].uri=lb://restaurant-service
+spring.cloud.gateway.routes[5].predicates[0]=Path=/images/**
+spring.cloud.gateway.routes[5].filters[0]=AddRequestHeader=X-Gateway-Request,true
+
+# Food Catalogue Service
+spring.cloud.gateway.routes[2].id=food-catalogue
+spring.cloud.gateway.routes[2].uri=lb://food-catalogue
+spring.cloud.gateway.routes[2].predicates[0]=Path=/food/**
+spring.cloud.gateway.routes[2].filters[0]=AddRequestHeader=X-Gateway-Request,true
+#spring.cloud.gateway.routes[2].filters[1]=CircuitBreaker=name=foodCatalogueCB
+#spring.cloud.gateway.routes[2].filters[2]=Retry=3
+
+# Order Service
+spring.cloud.gateway.routes[3].id=order-service
+spring.cloud.gateway.routes[3].uri=lb://order-service
+spring.cloud.gateway.routes[3].predicates[0]=Path=/order/**
+spring.cloud.gateway.routes[3].filters[0]=AddRequestHeader=X-Gateway-Request,true
+
+# User Service
+spring.cloud.gateway.routes[4].id=user-service
+spring.cloud.gateway.routes[4].uri=lb://user-service
+spring.cloud.gateway.routes[4].predicates[0]=Path=/user/**
+spring.cloud.gateway.routes[4].filters[0]=AddRequestHeader=X-Gateway-Request,true

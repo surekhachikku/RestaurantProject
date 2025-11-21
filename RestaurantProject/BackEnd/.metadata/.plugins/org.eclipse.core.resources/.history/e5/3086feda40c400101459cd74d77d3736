@@ -1,0 +1,58 @@
+package com.restaurant.restaurantservice.filter;
+
+import jakarta.servlet.Filter;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Component;
+
+import java.io.IOException;
+
+@Component
+@Order(1)
+public class GatewayValidationFilter implements Filter {
+
+    private static final String HEADER = "X-Gateway-Request";
+    private static final String HEADER_VALUE = "true";
+
+    @Override
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
+
+        HttpServletRequest req = (HttpServletRequest) request;
+        HttpServletResponse res = (HttpServletResponse) response;
+
+        String path = req.getRequestURI();
+
+        // Allow actuator
+        if (path.startsWith("/actuator")) {
+            chain.doFilter(request, response);
+            return;
+        }
+
+        // ----- INTERNAL CALL DETECTION -----
+        // If X-Forwarded-For is missing → this is internal RestTemplate/Eureka call
+        String forwardedFor = req.getHeader("X-Forwarded-For");
+        boolean isInternalCall = (forwardedFor == null);
+
+        // ----- GATEWAY CALL DETECTION -----
+        String headerValue = req.getHeader(HEADER);
+        boolean isFromGateway = (headerValue != null && headerValue.equals(HEADER_VALUE));
+
+        // Allow internal calls OR gateway calls
+        if (!isFromGateway && !isInternalCall) {
+            res.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            res.setContentType("application/json");
+            res.getWriter().write("""
+                {"error":"Direct access blocked. Use API Gateway","status":403,"path":"%s"}
+            """.formatted(path));
+            return;
+        }
+
+        chain.doFilter(request, response);
+    }
+}

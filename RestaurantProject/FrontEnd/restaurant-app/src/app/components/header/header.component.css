@@ -1,0 +1,137 @@
+.app-header {
+  background: linear-gradient(90deg, #1a1a1a, #2c2c2c);
+  color: #f0c14b;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 40px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+  font-family: "Poppins", sans-serif;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.header-left .logo {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  border: 2px solid #f0c14b;
+}
+
+.header-left h1 {
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  color: #f0c14b;
+  margin: 0;
+}
+
+.header-nav {
+  display: flex;
+  gap: 25px;
+}
+
+.header-nav a {
+  color: #f0c14b;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 16px;
+  position: relative;
+  padding-bottom: 4px;
+  transition: 0.3s;
+}
+
+.header-nav a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -3px;
+  width: 0%;
+  height: 2px;
+  background: #f0c14b;
+  transition: width 0.3s;
+}
+
+.header-nav a:hover::after,
+.header-nav a.active::after {
+  width: 100%;
+}
+
+.header-right .admin-btn {
+  background: #f0c14b;
+  color: #1a1a1a;
+  border: none;
+  border-radius: 20px;
+  padding: 8px 18px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.header-right .admin-btn:hover {
+  background: #ffe29e;
+  transform: scale(1.05);
+}
+
+@media (max-width: 768px) {
+  .app-header {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 15px 25px;
+  }
+
+  .header-nav {
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-top: 10px;
+  }
+
+  .header-right {
+    margin-top: 10px;
+  }
+}
+
+.header-right button {
+  background: #f0c14b;       /* same as admin button */
+  color: #1a1a1a;
+  border: none;
+  border-radius: 20px;
+  padding: 8px 18px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+  margin-left: 10px;
+}
+
+.header-right button:hover {
+  background: #ffe29e;
+  transform: scale(1.05);
+}
+
+.header-right button {
+  background: #f0c14b;
+  color: #1a1a1a;
+  border: none;
+  border-radius: 20px;
+  padding: 8px 18px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+  margin-left: 10px;
+}
+
+.header-right button.admin-btn {
+  background: #ffb700;  /* slightly darker yellow */
+}
+
+.header-right button:hover {
+  background: #ffe29e;
+  transform: scale(1.05);
+}

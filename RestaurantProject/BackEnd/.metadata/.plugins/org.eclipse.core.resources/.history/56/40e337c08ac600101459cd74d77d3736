@@ -1,0 +1,38 @@
+@RestController
+@RequestMapping("/restaurant")
+@CrossOrigin
+public class RestaurantController {
+
+    @Autowired
+    private RestaurantService restaurantService;
+
+    @Value("${restaurant.images.path}")
+    private String uploadDir;
+
+    @PostMapping("/addRestaurantsImage")
+    public ResponseEntity<RestaurantDTO> addRestaurant(
+            @RequestParam("name") String name,
+            @RequestParam("address") String address,
+            @RequestParam("city") String city,
+            @RequestParam("restaurantDescription") String restaurantDescription,
+            @RequestParam("image") MultipartFile imageFile
+    ) throws IOException {
+
+        String uniqueFileName = System.currentTimeMillis() + "_" + imageFile.getOriginalFilename();
+        File dest = new File(uploadDir + uniqueFileName);
+
+        dest.getParentFile().mkdirs();
+        imageFile.transferTo(dest);
+
+        String imageUrl = "/images/" + uniqueFileName;
+
+        RestaurantDTO dto = new RestaurantDTO();
+        dto.setName(name);
+        dto.setAddress(address);
+        dto.setCity(city);
+        dto.setRestaurantDescription(restaurantDescription);
+        dto.setImageUrl(imageUrl);
+
+        return new ResponseEntity<>(restaurantService.addRestaurants(dto), HttpStatus.CREATED);
+    }
+}

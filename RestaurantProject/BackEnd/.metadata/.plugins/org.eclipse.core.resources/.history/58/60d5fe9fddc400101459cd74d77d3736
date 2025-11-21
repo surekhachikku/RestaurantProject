@@ -1,0 +1,91 @@
+package com.restaurant.orderservice.service;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+
+import com.restaurant.orderservice.dto.OrderDTO;
+import com.restaurant.orderservice.dto.OrderDTOFromFrontEnd;
+import com.restaurant.orderservice.dto.User;
+import com.restaurant.orderservice.entity.Order;
+import com.restaurant.orderservice.mapper.OrderMapper;
+import com.restaurant.orderservice.repository.OrderRepository;
+
+@Service
+public class OrderService {
+
+	@Autowired
+	private OrderRepository orderRepository;
+	
+	@Autowired
+	private SequenceGenerator sequenceGenerator;
+	
+	@Autowired
+	private RestTemplate restTemplate;
+	
+	public OrderDTO saveOrder(OrderDTOFromFrontEnd orderDetails) {
+		Integer newOrderId = sequenceGenerator.generateNextOrderId();
+		User user =  fetchUserDetailsFromUserMicroservice(orderDetails.getUser().getUserId());
+		System.out.println("After fetching userdetails from userMicroservice:"+user.getUserId()+" "+user.getUserName());
+		Order order = new Order(
+				newOrderId,orderDetails.getFoodItems(),orderDetails.getRestaurant(),
+				orderDetails.getTotalPrice(),user);		
+		return OrderMapper.INSTANCE.mapOrderToOrderDTO(orderRepository.save(order));
+	}
+
+	/*private Users fetchUserDetailsFromUserMicroservice(int userId) {
+		
+		return restTemplate.getForObject("http://UserService/user/fetchUserById/"+userId, Users.class);
+		
+	}*/
+	private Users fetchUserDetailsFromUserMicroservice(int userId) {
+
+		System.out.println("UserId : "+userId);
+	    String url = "http://user-service/user/fetchUserById/"+userId;
+	    System.out.println("URL: "+url);
+	    HttpHeaders headers = new HttpHeaders();
+	    headers.set("X-Gateway-Request", "true");   // Add internal header manually
+
+	    HttpEntity<Void> entity = new HttpEntity<>(headers);
+
+	    ResponseEntity<Users> response =
+	            restTemplate.exchange(url, HttpMethod.GET, entity, Users.class);
+
+	    return response.getBody();
+	}
+
+	public List<OrderDTO> getAllOrders() {
+	    List<Order> orders = orderRepository.findAll();
+	    return orders.stream()
+	            .map(OrderMapper.INSTANCE::mapOrderToOrderDTO)
+	            .toList();
+	}
+
+	public List<OrderDTO> getOrdersByUserId(int userId) {
+	    List<Order> orders = orderRepository.findByUser_UserId(userId);
+	    return orders.stream()
+	            .map(OrderMapper.INSTANCE::mapOrderToOrderDTO)
+	            .toList();
+	}
+
+	public List<OrderDTO> getOrdersByRestaurantId(int restaurantId) {
+	    List<Order> orders = orderRepository.findByRestaurant_Id(restaurantId);
+	    return orders.stream()
+	            .map(OrderMapper.INSTANCE::mapOrderToOrderDTO)
+	            .toList();
+	}
+	public OrderDTO markOrderProcessed(Integer orderId) {
+		System.out.println("Inside OrderService");
+		Order order = orderRepository.findByOrderId(orderId)
+			    .orElseThrow(() -> new RuntimeException("Order not found with ID: " + orderId));
+	    order.setProcessed(true);
+	    return OrderMapper.INSTANCE.mapOrderToOrderDTO(orderRepository.save(order));
+	}
+}

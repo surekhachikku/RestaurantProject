@@ -1,0 +1,87 @@
+/* Background matches header gradient */
+.login-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: calc(100vh - 70px); /* leave space for header */
+  background: linear-gradient(90deg, #1a1a1a, #2c2c2c);
+  font-family: "Poppins", sans-serif;
+}
+
+.login-card {
+  background: #2c2c2c;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.4);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+  color: #f0c14b;
+}
+
+.login-card h2 {
+  margin-bottom: 30px;
+  font-size: 28px;
+  font-weight: 600;
+}
+
+.form-group {
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 6px;
+}
+
+input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #f0c14b;
+  background: #1a1a1a;
+  color: #f0c14b;
+  font-size: 15px;
+  transition: 0.3s;
+}
+
+input::placeholder {
+  color: #f0c14b80;
+}
+
+input:focus {
+  outline: none;
+  border-color: #ffe29e;
+  box-shadow: 0 0 5px rgba(240, 193, 75, 0.5);
+}
+
+button {
+  width: 100%;
+  padding: 12px;
+  background: #f0c14b;
+  color: #1a1a1a;
+  border: none;
+  border-radius: 20px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+  margin-top: 10px;
+}
+
+button:hover {
+  background: #ffe29e;
+  transform: scale(1.05);
+}
+
+button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.error-msg {
+  color: #ff6b6b;
+  margin-top: 15px;
+  font-weight: 500;
+}

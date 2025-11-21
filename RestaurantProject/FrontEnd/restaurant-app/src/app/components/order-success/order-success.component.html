@@ -1,0 +1,45 @@
+<div class="success-page">  
+  <div class="success-card">
+    <h2>✅ Order Placed Successfully!</h2>
+
+    <div class="restaurant-info">
+      <p><strong>Restaurant:</strong> {{ order?.restaurant?.name }}</p>
+      <p><strong>Address:</strong> {{ order?.restaurant?.address }}</p>
+      <!-- Display current date & time -->
+      <p>
+        <strong>Order Placed:</strong> 
+        {{ currentDateTime | date:'fullDate' }} at 
+        {{ currentDateTime | date:'shortTime' }}
+      </p>
+    </div>
+
+    <h3>Ordered Items:</h3>
+    <table class="order-table">
+      <thead>
+        <tr>
+          <th>Item</th>
+          <th>Qty</th>
+          <th>Price</th>
+          <th>Subtotal</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let food of order?.foodItems">
+          <td>{{ food.itemName }}</td>
+          <td>{{ food.quantity }}</td>
+          <td>₹{{ food.price }}</td>
+          <td>₹{{ (food.price * food.quantity).toFixed(2) }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="totals">
+      <p><strong>Subtotal:</strong> ₹{{ subtotal.toFixed(2) }}</p>
+      <p><strong>Tip (10%):</strong> ₹{{ tip.toFixed(2) }}</p>
+      <p><strong>Tax (5%):</strong> ₹{{ tax.toFixed(2) }}</p>
+      <h3>Total: ₹{{ total.toFixed(2) }}</h3>
+    </div>
+
+    <button class="back-btn" (click)="goHome()">Back to Restaurants</button>
+  </div>
+</div>

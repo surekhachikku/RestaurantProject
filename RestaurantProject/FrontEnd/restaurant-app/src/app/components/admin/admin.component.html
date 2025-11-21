@@ -1,0 +1,21 @@
+<div class="admin-container">
+  <h2>Admin Dashboard</h2>
+  <p>Manage restaurants, food items, and customer orders from here.</p>
+
+  <div class="admin-options">
+    <div class="admin-card" (click)="goToAddRestaurant()">
+      <h3>➕ Restaurant</h3>
+      <p> Add / Modify Restaurant Details</p>
+    </div>
+<!--
+    <div class="admin-card" (click)="goToAddFood()">
+      <h3>🍽️ Add Food Items</h3>
+      <p>Add food items for a selected restaurant.</p>
+    </div> -->
+
+    <div class="admin-card" (click)="goToOrders()">
+      <h3>📋 View Orders</h3>
+      <p>View and manage all placed orders.</p>
+    </div>
+  </div>
+</div>

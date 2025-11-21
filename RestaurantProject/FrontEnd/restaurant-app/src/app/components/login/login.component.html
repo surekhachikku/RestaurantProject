@@ -1,0 +1,23 @@
+<div class="login-page">
+  <div class="login-card">
+    <h2>Login to RestaurantHub</h2>
+
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input id="username" formControlName="username" type="text" placeholder="Enter username" />
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input id="password" formControlName="password" type="password" placeholder="Enter password" />
+      </div>
+
+      <button type="submit" [disabled]="loading">
+        {{ loading ? 'Logging in...' : 'Login' }}
+      </button>
+
+      <p class="error-msg" *ngIf="error">{{ error }}</p>
+    </form>
+  </div>
+</div>
