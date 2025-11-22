@@ -1,0 +1,14 @@
+package com.restaurant.foodcatalogue.dto;
+
+public class RestaurantDeletedEvent {
+    private int restaurantId;
+
+    public RestaurantDeletedEvent() {}
+
+    public RestaurantDeletedEvent(int restaurantId) {
+        this.restaurantId = restaurantId;
+    }
+
+    public int getRestaurantId() { return restaurantId; }
+    public void setRestaurantId(int restaurantId) { this.restaurantId = restaurantId; }
+}

@@ -1,0 +1,5 @@
+package com.restaurant.foodcatalogue.config;
+
+public class KafkaConsumerConfig {
+
+}

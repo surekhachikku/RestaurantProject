@@ -1,0 +1,17 @@
+# Order Service Configuration
+spring.application.name=order-service
+
+# Server Configuration
+server.port=9095
+
+# Eureka Configuration
+eureka.client.service-url.defaultZone=http://localhost:8761/eureka/
+eureka.instance.prefer-ip-address=true
+
+# MongoDB Configuration
+spring.data.mongodb.uri=mongodb://localhost:27017/OrderDb
+spring.data.mongodb.host=localhost
+spring.data.mongodb.port=27017
+spring.data.mongodb.database=OrderDb
+spring.data.mongodb.repositories.enabled=true
+

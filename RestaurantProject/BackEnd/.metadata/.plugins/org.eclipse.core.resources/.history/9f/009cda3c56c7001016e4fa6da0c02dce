@@ -1,0 +1,19 @@
+package com.restaurant.restaurantservice.dto;
+
+public class RestaurantDeletedEventDTO {
+	
+	private int id;
+
+	public RestaurantDeletedEventDTO() {
+		
+	}
+	public RestaurantDeletedEventDTO(int id) {
+		super();
+		this.id = id;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+}

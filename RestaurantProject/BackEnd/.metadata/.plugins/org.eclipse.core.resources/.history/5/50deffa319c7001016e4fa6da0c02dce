@@ -1,0 +1,5 @@
+package com.restaurant.restaurantservice.config;
+
+public class KafkaTopicConfig {
+
+}

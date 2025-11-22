@@ -1,0 +1,26 @@
+package com.restaurant.foodcatalogue.service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.stereotype.Service;
+
+import com.restaurant.foodcatalogue.dto.RestaurantDeletedEventDTO;
+import com.restaurant.foodcatalogue.repository.FoodCatalogueRepository;
+
+@Service
+public class RestaurantEventListener {
+
+
+	@Autowired
+	private FoodCatalogueRepository foodCatalogueRepository;
+
+    @KafkaListener(topics = "restaurant.events", groupId = "food-catalogue")
+    public void handleRestaurantDeleted(RestaurantDeletedEventDTO event) {
+        int restaurantId = event.getRestaurantId();
+        System.out.println("Received RESTAURANT_DELETED event for restaurant id: " + restaurantId);
+
+        // Delete all food items linked to the restaurant
+        foodCatalogueRepository.deleteByRestaurantId(restaurantId);
+        System.out.println("Deleted all food items for restaurant id: " + restaurantId);
+    }
+}
